@@ -11,10 +11,10 @@ Please make sure you understand its [implications and guarantees](https://writin
 
 You can download prebuilt binaries from the [releases](https://github.com/netlify/binrc/releases).
 
-You can also use binrc to install binrc:
+You can also install binrc to install binrc:
 
 ```
-binrc use netlify/binrc 0.2.0
+binrc install netlify/binrc 0.2.0
 ```
 
 Or you can download the cutting edge version with `go get`:
@@ -25,15 +25,15 @@ go get github.com/netlify/binrc
 
 ## Usage
 
-There are two main subcommands, `use` and `exec`. By default, Binrc executes `use` if there is no subcommand specified.
+There are two main subcommands, `install` and `exec`. By default, Binrc executes `install` if there is no subcommand specified.
 
-### Use subcommand
+### install subcommand
 
-The `use` subcommand sets the version of the binary specified in the host PATH. If that version is not already in the host's
+The `install` subcommand Installs a new binary. If that version is not already in the host's
 cache, Binrc will try to fetch it from GitHub's releases and keep it in its cache.
 
 ```
-binrc use spf13/hugo 0.19
+binrc install spf13/hugo 0.19
 ```
 
 ### Exec subcommand
@@ -55,5 +55,14 @@ HUGO_VERSION=0.19 binrc exec hugo build
 ```
 
 ```
-HUGO_VERSION=0.19 binrc use spf13/hugo
+HUGO_VERSION=0.19 binrc install spf13/hugo
 ```
+
+### Aliases
+
+Binrc keeps a list of aliases to make installing binaries more easy. If a project name is not in `OWNER/NAME` for, Binrc will
+check the list of aliases to try to resolve the project.
+
+This is the current known list:
+
+- hugo: spf13/hugo
