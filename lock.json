@@ -1,0 +1,28 @@
+{
+    "memo": "c3e7bfd5ea96b0b7eeb7b1e93aa052d4af4425808e9e12f0aa1fe6b0adbdb086",
+    "projects": [
+        {
+            "name": "github.com/inconshreveable/mousetrap",
+            "branch": "master",
+            "revision": "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/spf13/cobra",
+            "branch": "master",
+            "revision": "4c05eb1145f16d0e6bb4a3e1b6d769f4713cb41f",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/spf13/pflag",
+            "revision": "7f60f83a2c81bc3c3c0d5297f61ddfa68da9d3b7",
+            "packages": [
+                "."
+            ]
+        }
+    ]
+}

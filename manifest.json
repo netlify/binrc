@@ -1,0 +1,7 @@
+{
+    "dependencies": {
+        "github.com/spf13/cobra": {
+            "branch": "master"
+        }
+    }
+}
