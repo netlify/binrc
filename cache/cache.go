@@ -45,13 +45,13 @@ type Project struct {
 
 // URL returns the URL to download the tarball from.
 func (p *Project) URL() string {
-	return fmt.Sprintf(tarballTemplate, p.Name, p.Version, p.Name, p.cleanVersion)
+	return fmt.Sprintf(tarballTemplate, p.FullName, p.Version, p.Name, p.cleanVersion)
 }
 
 // BinaryName returns the name of the binary to look for
 // after the tarball is extracted.
 func (p *Project) BinaryName() string {
-	return fmt.Sprintf(binTemplate, p.Name, p.Version, p.Name, p.cleanVersion)
+	return fmt.Sprintf(binTemplate, p.Name, p.cleanVersion, p.Name, p.cleanVersion)
 }
 
 func newProject(name, version string) (*Project, error) {

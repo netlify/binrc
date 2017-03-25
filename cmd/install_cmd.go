@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"path"
+	"strings"
 
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/netlify/binrc/cache"
@@ -16,15 +17,18 @@ var installCmd = &cobra.Command{
 }
 
 func execInstallCmd(cmd *cobra.Command, args []string) {
-	sp := cmd.Flag("cache-store-path").Value.String()
-	h, err := homedir.Dir()
-	if err != nil {
-		displayError(err)
-		return
-	}
+	sp := cmd.Flag("-cache-store-path").Value.String()
 
-	fp := path.Clean(path.Join(h, sp))
-	c := cache.New(fp)
+	if !strings.HasPrefix(sp, "/") {
+		h, err := homedir.Dir()
+		if err != nil {
+			displayError(err)
+			return
+		}
+
+		sp = path.Clean(path.Join(h, sp))
+	}
+	c := cache.New(sp)
 
 	var version string
 	if len(args) > 1 {

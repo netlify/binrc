@@ -18,7 +18,7 @@ var rootCmd = &cobra.Command{
 
 // RootCmd adds flags and subcommands to the root command.
 func RootCmd() *cobra.Command {
-	rootCmd.PersistentFlags().StringP("cache-store-path", "c", cache.DefaultStorePath, "The path to binrc's cache directory, $HOME/.binrc by default")
+	rootCmd.PersistentFlags().StringP("-cache-store-path", "c", cache.DefaultStorePath, "The path to binrc's cache directory, $HOME/.binrc by default")
 	rootCmd.AddCommand(installCmd, versionCmd)
 	return rootCmd
 }
