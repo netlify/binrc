@@ -25,7 +25,7 @@ func RootCmd() *cobra.Command {
 
 func displayError(err error) {
 	if os.Getenv("DEBUG") != "" {
-		fmt.Printf("%v+\n", err)
+		fmt.Printf("%+v\n", err)
 	} else {
 		fmt.Println(err)
 	}

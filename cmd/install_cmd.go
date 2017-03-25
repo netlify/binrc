@@ -23,11 +23,19 @@ func execInstallCmd(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	c := cache.New(path.Clean(path.Join(sp, h)))
-	pc, err := c.GetOrSet(args[0], args[1])
-	if err != nil {
-		displayError(err)
+	fp := path.Clean(path.Join(h, sp))
+	c := cache.New(fp)
+
+	var version string
+	if len(args) > 1 {
+		version = args[1]
 	}
 
-	fmt.Println(pc.BinaryPath)
+	pc, err := c.GetOrSet(args[0], version)
+	if err != nil {
+		displayError(err)
+		return
+	}
+
+	fmt.Println(pc.FullPath)
 }

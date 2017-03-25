@@ -25,7 +25,7 @@ go get github.com/netlify/binrc
 
 ## Usage
 
-There are two main subcommands, `install` and `exec`. By default, Binrc executes `install` if there is no subcommand specified.
+There is a main subcommand, `install`.
 
 ### install subcommand
 
@@ -36,23 +36,10 @@ cache, Binrc will try to fetch it from GitHub's releases and keep it in its cach
 binrc install spf13/hugo 0.19
 ```
 
-### Exec subcommand
-
-The `exec` subcommand runs the given command with a specified version. This is a one-off operation that won't change the
-system's PATH.
-
-```
-binrc exec --version 0.19 hugo build
-```
-
 ### Versions as environment variables
 
 Binrc supports settings binary version numbers as environment variables. It will search for the binary name followed by `_VERSION`
 in the environment to configure the right version.
-
-```
-HUGO_VERSION=0.19 binrc exec hugo build
-```
 
 ```
 HUGO_VERSION=0.19 binrc install spf13/hugo
