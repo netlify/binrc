@@ -136,6 +136,7 @@ func download(project *Project, destination string) error {
 
 	tmp, err := ioutil.TempDir(parent, "binrc-")
 	if err != nil {
+		os.RemoveAll(parent)
 		return errors.Wrapf(err, "error preparing directory to download %s", project.FullName)
 	}
 	defer os.RemoveAll(tmp)
@@ -143,17 +144,25 @@ func download(project *Project, destination string) error {
 	url := project.URL()
 	res, err := http.Get(url)
 	if err != nil {
+		os.RemoveAll(parent)
 		return errors.Wrapf(err, "error downloading project %s, from %s:", project.FullName, url)
 	}
 	defer res.Body.Close()
 
+	if res.StatusCode != 200 {
+		os.RemoveAll(parent)
+		return errors.Errorf("error downloading project %s, from %s - binary doesn't seem to exist: %v", project.FullName, url, res.StatusCode)
+	}
+
 	if err := untar(res.Body, tmp); err != nil {
+		os.RemoveAll(parent)
 		return errors.Wrapf(err, "error unpacking file for %s, from %s", project.FullName, url)
 	}
 
 	bin := project.BinaryName()
 	fp := path.Join(tmp, bin)
 	if err := os.Rename(fp, destination); err != nil {
+		os.RemoveAll(parent)
 		return errors.Wrapf(err, "error renaming %s to %s", fp, destination)
 	}
 

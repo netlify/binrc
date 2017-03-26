@@ -29,4 +29,6 @@ func displayError(err error) {
 	} else {
 		fmt.Println(err)
 	}
+
+	os.Exit(1)
 }
