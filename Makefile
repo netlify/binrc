@@ -1,4 +1,4 @@
-.PONY: all build deps image lint test
+.PONY: all build deps image lint release test
 
 all: test build ## Run the tests and build the binary.
 
@@ -17,6 +17,13 @@ image: ## Build the Docker image.
 
 lint: ## Run golint to ensure the code follows Go styleguide.
 	@golint -set_exit_status `go list ./... | grep -v /vendor/`
+
+release: build ## Build the linux binary and upload it to GitHub releases as a tarball
+	@rm -rf releases/*
+	@mkdir -p releases/binrc_${TAG}_linux_amd64
+	@mv binrc releases/binrc_${TAG}_linux_amd64/binrc_${TAG}_linux_amd64
+	@cp LICENSE releases/binrc_${TAG}_linux_amd64/
+	@tar -C releases -czvf releases/binrc_${TAG}_Linux-64bit.tar.gz binrc_${TAG}_linux_amd64
 
 test: lint ## Run tests.
 	@go test -v `go list ./... | grep -v /vendor/`
