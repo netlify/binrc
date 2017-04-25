@@ -65,6 +65,7 @@ func (p *Project) URL() string {
 		if err := dec.Decode(&releases); err == io.EOF {
 			break
 		}
+	releases:
 		for _, r := range releases {
 			// Checks if the tag name exists
 			if r.Tag_name == p.Version || r.Tag_name == p.cleanVersion {
@@ -73,6 +74,7 @@ func (p *Project) URL() string {
 					// Gets the correct url for the tarball
 					if strings.Contains(n, "linux") && strings.Contains(n, "64bit") && strings.HasSuffix(n, ".tar.gz") {
 						tarballUrl = a.Browser_download_url
+						break releases
 					}
 				}
 			}
