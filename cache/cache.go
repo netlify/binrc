@@ -194,6 +194,9 @@ func download(project *Project, destination string) error {
 
 	bin := project.BinaryName()
 	fp := path.Join(tmp, bin)
+	if _, err := os.Stat(fp); os.IsNotExist(err) {
+		fp = path.Join(tmp, project.Name)
+	}
 	if err := os.Rename(fp, destination); err != nil {
 		os.RemoveAll(parent)
 		return errors.Wrapf(err, "error renaming %s to %s", fp, destination)
