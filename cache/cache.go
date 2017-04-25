@@ -13,7 +13,11 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/BurntSushi/toml"
+	version "github.com/hashicorp/go-version"
+	_ "github.com/netlify/binrc/statik"
 	"github.com/pkg/errors"
+	"github.com/rakyll/statik/fs"
 )
 
 const (
@@ -22,14 +26,35 @@ const (
 	// binaries and bundles are stored.
 	DefaultStorePath = ".binrc"
 
-	tarballTemplate = "https://github.com/%s/releases/download/%s/%s_%s_Linux-64bit.tar.gz"
-	binTemplate     = "%s_%s_linux_amd64/%s_%s_linux_amd64"
+	tarballTemplate = "https://github.com/%s/releases/download/%s/%s"
 )
 
 // aliases is a map of known project aliases
 // to make finding project more easy.
 var aliases = map[string]string{
 	"hugo": "spf13/hugo",
+}
+
+type template struct {
+	Range   string
+	Tarball string
+	Bin     string
+}
+
+type templates map[string][]template
+
+var (
+	defaultTemplate = &template{
+		Tarball: "%s_v%s_Linux-64bit.tar.gz",
+		Bin:     "%s_%s_linux_amd64/%s_%s_linux_amd64",
+	}
+)
+
+// Cache stores and retrieves projects
+// from the system's cache and GitHub releases
+type Cache struct {
+	templates templates
+	storePath string
 }
 
 // Project represents a project managed with Binrc.
@@ -41,20 +66,26 @@ type Project struct {
 	Name         string
 	FullPath     string
 	cleanVersion string
+	template     *template
 }
 
 // URL returns the URL to download the tarball from.
 func (p *Project) URL() string {
-	return fmt.Sprintf(tarballTemplate, p.FullName, p.Version, p.Name, p.cleanVersion)
+	tarballName := fmt.Sprintf(p.template.Tarball, p.Name, p.cleanVersion)
+	return fmt.Sprintf(tarballTemplate, p.FullName, p.Version, tarballName)
 }
 
 // BinaryName returns the name of the binary to look for
 // after the tarball is extracted.
 func (p *Project) BinaryName() string {
-	return fmt.Sprintf(binTemplate, p.Name, p.cleanVersion, p.Name, p.cleanVersion)
+	if strings.Contains(p.template.Bin, "%") {
+		return fmt.Sprintf(p.template.Bin, p.Name, p.cleanVersion, p.Name, p.cleanVersion)
+	} else {
+		return p.template.Bin
+	}
 }
 
-func newProject(name, version string) (*Project, error) {
+func (c *Cache) newProject(name, versionString string) (*Project, error) {
 	name = strings.Trim(name, "/")
 	if !strings.Contains(name, "/") {
 		p, exist := aliases[name]
@@ -66,44 +97,71 @@ func newProject(name, version string) (*Project, error) {
 	}
 
 	nwo := strings.SplitN(name, "/", 2)
-	if version == "" {
+	if versionString == "" {
 		ev := os.Getenv(fmt.Sprintf("%s_VERSION", strings.ToUpper(nwo[1])))
 		if ev == "" {
 			return nil, errors.Errorf("unknown project version for %s", name)
 		}
-		version = ev
+		versionString = ev
 	}
 
-	if !strings.HasPrefix(version, "v") {
-		version = "v" + version
+	if !strings.HasPrefix(versionString, "v") {
+		versionString = "v" + versionString
+	}
+	cleanVersion, err := version.NewVersion(strings.TrimLeft(versionString, "v"))
+	if err != nil {
+		return nil, errors.Wrapf(err, "invalid version %s", versionString)
+	}
+
+	var t *template
+	projectTemplates, ok := c.templates[nwo[1]]
+	if ok {
+		for _, tmpl := range projectTemplates {
+			constraint, err := version.NewConstraint(tmpl.Range)
+			if err != nil {
+				return nil, errors.Wrapf(err, "invalid constraint %s", tmpl.Range)
+			}
+			if constraint.Check(cleanVersion) {
+				t = &tmpl
+				break
+			}
+		}
+	} else {
+		t = defaultTemplate
+	}
+
+	if err != nil {
+		return nil, errors.Errorf(" version %s doesn't match any known constraint", versionString)
 	}
 
 	return &Project{
 		FullName:     name,
-		Version:      version,
+		Version:      versionString,
 		Owner:        nwo[0],
 		Name:         nwo[1],
-		cleanVersion: strings.TrimLeft(version, "v"),
+		cleanVersion: cleanVersion.String(),
+		template:     t,
 	}, nil
-}
-
-// Cache stores and retrieves projects
-// from the system's cache and GitHub releases
-type Cache struct {
-	storePath string
 }
 
 // New initializes the cache with
 // a given store path.
-func New(storePath string) *Cache {
-	return &Cache{storePath}
+func New(storePath string) (*Cache, error) {
+	t, err := loadVersionTemplates()
+	if err != nil {
+		return nil, err
+	}
+	return &Cache{
+		templates: *t,
+		storePath: storePath,
+	}, nil
 }
 
 // GetOrSet fetches a project from the cache.
 // If the project is not in the cache, it tries
 // to donwload it from GitHub releases.
 func (c *Cache) GetOrSet(name, version string) (*Project, error) {
-	project, err := newProject(name, version)
+	project, err := c.newProject(name, version)
 	if err != nil {
 		return nil, err
 	}
@@ -210,4 +268,30 @@ func untar(reader io.Reader, destination string) error {
 	}
 
 	return nil
+}
+
+func loadVersionTemplates() (*templates, error) {
+	var r io.Reader
+	if fromEnv := os.Getenv("BINRC_TEMPLATES"); fromEnv != "" {
+		f, err := os.Open(fromEnv)
+		if err != nil {
+			return nil, err
+		}
+		r = f
+	} else {
+		statikFS, err := fs.New()
+		f, err := statikFS.Open("/templates.toml")
+		if err != nil {
+			return nil, errors.Wrapf(err, "unable to load templates files")
+		}
+		r = f
+	}
+
+	t := &templates{}
+	_, err := toml.DecodeReader(r, t)
+	if err != nil {
+		return nil, err
+	}
+
+	return t, nil
 }

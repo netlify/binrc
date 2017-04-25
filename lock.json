@@ -1,6 +1,22 @@
 {
-    "memo": "c3e7bfd5ea96b0b7eeb7b1e93aa052d4af4425808e9e12f0aa1fe6b0adbdb086",
+    "memo": "1f0ab0b3dfffae2040e9d15511408d8420bffad799aea6326c4ef3490cc7429a",
     "projects": [
+        {
+            "name": "github.com/BurntSushi/toml",
+            "version": "v0.3.0",
+            "revision": "b26d9c308763d68093482582cea63d69be07a0f0",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/hashicorp/go-version",
+            "branch": "master",
+            "revision": "03c5bf6be031b6dd45afec16b1cf94fc8938bc77",
+            "packages": [
+                "."
+            ]
+        },
         {
             "name": "github.com/inconshreveable/mousetrap",
             "branch": "master",
@@ -10,16 +26,41 @@
             ]
         },
         {
+            "name": "github.com/mitchellh/go-homedir",
+            "branch": "master",
+            "revision": "b8bc1bf767474819792c23f32d8286a45736f1c6",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/pkg/errors",
+            "version": "v0.8.0",
+            "revision": "3866ebc348c54054262feae422da428fe6cf147d",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/rakyll/statik",
+            "version": "v0.1.0",
+            "revision": "274df120e9065bdd08eb1120e0375e3dc1ae8465",
+            "packages": [
+                "fs"
+            ]
+        },
+        {
             "name": "github.com/spf13/cobra",
             "branch": "master",
-            "revision": "4c05eb1145f16d0e6bb4a3e1b6d769f4713cb41f",
+            "revision": "6ed17b5128e8932c9ecd4c3970e8ea5e60a418ac",
             "packages": [
                 "."
             ]
         },
         {
             "name": "github.com/spf13/pflag",
-            "revision": "7f60f83a2c81bc3c3c0d5297f61ddfa68da9d3b7",
+            "branch": "master",
+            "revision": "2300d0f8576fe575f71aaa5b9bbe4e1b0dc2eb51",
             "packages": [
                 "."
             ]

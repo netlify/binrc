@@ -3,6 +3,8 @@
 all: test build ## Run the tests and build the binary.
 
 build: ## Build the binary.
+	@rm -rf statik
+	@go generate
 	@go build -ldflags "-X github.com/netlify/binrc/cmd.Version=`git rev-parse HEAD`"
 
 deps: ## Install dependencies.

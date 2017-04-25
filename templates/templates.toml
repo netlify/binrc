@@ -1,0 +1,4 @@
+hugo = [
+  { range = ">=0.19, <0.20.3", tarball = "%s_v%s_Linux-64bit.tar.gz", bin = "%s_%s_linux_amd64/%s_%s_linux_amd64" },
+  { range = ">=0.20.3",        tarball = "%s_%s_Linux-64bit.tar.gz",  bin = "hugo" }
+]
