@@ -1,3 +1,5 @@
+//go:generate statik -src=./templates
+
 package main
 
 import (

@@ -28,7 +28,11 @@ func execInstallCmd(cmd *cobra.Command, args []string) {
 
 		sp = path.Clean(path.Join(h, sp))
 	}
-	c := cache.New(sp)
+	c, err := cache.New(sp)
+	if err != nil {
+		displayError(err)
+		return
+	}
 
 	var version string
 	if len(args) > 1 {
