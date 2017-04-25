@@ -108,7 +108,9 @@ func (c *Cache) newProject(name, versionString string) (*Project, error) {
 	if !strings.HasPrefix(versionString, "v") {
 		versionString = "v" + versionString
 	}
-	cleanVersion, err := version.NewVersion(strings.TrimLeft(versionString, "v"))
+
+	cleanVersionString := strings.TrimLeft(versionString, "v")
+	cleanVersion, err := version.NewVersion(cleanVersionString)
 	if err != nil {
 		return nil, errors.Wrapf(err, "invalid version %s", versionString)
 	}
@@ -139,7 +141,7 @@ func (c *Cache) newProject(name, versionString string) (*Project, error) {
 		Version:      versionString,
 		Owner:        nwo[0],
 		Name:         nwo[1],
-		cleanVersion: cleanVersion.String(),
+		cleanVersion: cleanVersionString,
 		template:     t,
 	}, nil
 }
