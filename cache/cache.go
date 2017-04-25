@@ -3,6 +3,7 @@ package cache
 import (
 	"archive/tar"
 	"compress/gzip"
+	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -22,8 +23,8 @@ const (
 	// binaries and bundles are stored.
 	DefaultStorePath = ".binrc"
 
-	tarballTemplate = "https://github.com/%s/releases/download/%s/%s_%s_Linux-64bit.tar.gz"
-	binTemplate     = "%s_%s_linux_amd64/%s_%s_linux_amd64"
+	releasesTemplate = "https://api.github.com/repos/%s/releases"
+	binTemplate      = "%s_%s_linux_amd64/%s_%s_linux_amd64"
 )
 
 // aliases is a map of known project aliases
@@ -43,9 +44,43 @@ type Project struct {
 	cleanVersion string
 }
 
+// Represents the GitHub API for the releases from a repository.
+type ReleaseAssets struct {
+	Browser_download_url string
+}
+type Releases struct {
+	Tag_name string
+	Assets   []ReleaseAssets
+}
+
 // URL returns the URL to download the tarball from.
 func (p *Project) URL() string {
-	return fmt.Sprintf(tarballTemplate, p.FullName, p.Version, p.Name, p.cleanVersion)
+	var tarballUrl string
+	url := fmt.Sprintf(releasesTemplate, p.FullName)
+	res, _ := http.Get(url)
+	dec := json.NewDecoder(res.Body)
+	defer res.Body.Close()
+	for {
+		var releases []Releases
+		if err := dec.Decode(&releases); err == io.EOF {
+			break
+		}
+	releases:
+		for _, r := range releases {
+			// Checks if the tag name exists
+			if r.Tag_name == p.Version || r.Tag_name == p.cleanVersion {
+				for _, a := range r.Assets {
+					n := strings.ToLower(a.Browser_download_url)
+					// Gets the correct url for the tarball
+					if strings.Contains(n, "linux") && strings.Contains(n, "64bit") && strings.HasSuffix(n, ".tar.gz") {
+						tarballUrl = a.Browser_download_url
+						break releases
+					}
+				}
+			}
+		}
+	}
+	return tarballUrl
 }
 
 // BinaryName returns the name of the binary to look for
@@ -161,6 +196,9 @@ func download(project *Project, destination string) error {
 
 	bin := project.BinaryName()
 	fp := path.Join(tmp, bin)
+	if _, err := os.Stat(fp); os.IsNotExist(err) {
+		fp = path.Join(tmp, project.Name)
+	}
 	if err := os.Rename(fp, destination); err != nil {
 		os.RemoveAll(parent)
 		return errors.Wrapf(err, "error renaming %s to %s", fp, destination)
