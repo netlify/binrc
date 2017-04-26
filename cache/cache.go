@@ -128,12 +128,12 @@ func (c *Cache) newProject(name, versionString string) (*Project, error) {
 				break
 			}
 		}
+
+		if t == nil {
+			return nil, errors.Errorf("%s's version %s doesn't match any known constraint, binrc cannot install it", nwo[1], versionString)
+		}
 	} else {
 		t = defaultTemplate
-	}
-
-	if err != nil {
-		return nil, errors.Errorf(" version %s doesn't match any known constraint", versionString)
 	}
 
 	return &Project{
