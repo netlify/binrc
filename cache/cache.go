@@ -15,7 +15,7 @@ import (
 
 	"github.com/BurntSushi/toml"
 	version "github.com/hashicorp/go-version"
-	_ "github.com/netlify/binrc/statik"
+	_ "github.com/netlify/binrc/statik" // this is required
 	"github.com/pkg/errors"
 	"github.com/rakyll/statik/fs"
 )
@@ -80,9 +80,8 @@ func (p *Project) URL() string {
 func (p *Project) BinaryName() string {
 	if strings.Contains(p.template.Bin, "%") {
 		return fmt.Sprintf(p.template.Bin, p.Name, p.cleanVersion, p.Name, p.cleanVersion)
-	} else {
-		return p.template.Bin
 	}
+	return p.template.Bin
 }
 
 func (c *Cache) newProject(name, versionString string) (*Project, error) {
