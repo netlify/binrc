@@ -2,3 +2,4 @@ binrc
 vendor
 releases
 statik
+_vendor*
