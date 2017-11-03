@@ -3,3 +3,7 @@ hugo = [
   { range = "0.20.3",          tarball = "%s_v%s_Linux-64bit.tar.gz",  bin = "hugo" },
   { range = ">0.20.3",         tarball = "%s_%s_Linux-64bit.tar.gz",  bin = "hugo" }
 ]
+
+gutenberg = [
+  { range = ">0.0.5", tarball = "%s-v%s-x86_64-unknown-linux-gnu.tar.gz", bin = "gutenberg" }
+]
