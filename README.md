@@ -53,3 +53,4 @@ check the list of aliases to try to resolve the project.
 This is the current known list:
 
 - hugo: spf13/hugo
+- gutenberg: keats/gutenberg

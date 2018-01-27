@@ -33,6 +33,7 @@ const (
 // to make finding project more easy.
 var aliases = map[string]string{
 	"hugo": "spf13/hugo",
+	"gutenberg": "keats/gutenberg",
 }
 
 type template struct {
