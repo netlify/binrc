@@ -3,7 +3,8 @@ hugo = [
   { range = "0.16",            tarball = "%s_%s_linux-64bit.tgz", bin = "hugo" },
   { range = ">=0.17, <0.20.3", tarball = "%s_%s_Linux-64bit.tar.gz", bin = "%s_%s_linux_amd64/%s_%s_linux_amd64" },
   { range = "0.20.3",          tarball = "%s_v%s_Linux-64bit.tar.gz",  bin = "hugo" },
-  { range = ">0.20.3",         tarball = "%s_%s_Linux-64bit.tar.gz",  bin = "hugo" }
+  { range = ">0.20.3, <0.43",  tarball = "%s_%s_Linux-64bit.tar.gz",  bin = "hugo" },
+  { range = ">=0.43",          tarball = "%s_extended_%s_Linux-64bit.tar.gz",  bin = "hugo" },
 ]
 
 gutenberg = [

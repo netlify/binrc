@@ -5,7 +5,7 @@ please read the [code of conduct](CODE_OF_CONDUCT.md).
 
 ## Setup
 
-> Install Go and Dep https://github.com/golang/deb
+> Install Go and Dep https://github.com/golang/dep
 
 ```sh
 $ git clone https://github.com/netlify/binrc
