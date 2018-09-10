@@ -34,6 +34,7 @@ const (
 var aliases = map[string]string{
 	"hugo": "spf13/hugo",
 	"gutenberg": "keats/gutenberg",
+	"zola": "getzola/zola",
 }
 
 type template struct {
