@@ -11,7 +11,7 @@ build: ## Build the binary.
 	@go build -ldflags "-X github.com/netlify/binrc/cmd.Version=`git rev-parse HEAD`"
 
 deps: ## Install dependencies.
-	@go get -u github.com/rakyll/statik
+	@go get -u github.com/Keats/statik
 	@go get -u github.com/golang/lint/golint
 	@go get -u github.com/golang/dep/cmd/dep && dep ensure
 
