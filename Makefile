@@ -6,20 +6,18 @@ help: ## Show this help.
 all: deps test build ## Run the tests and build the binary.
 
 build: ## Build the binary.
-	@rm -rf statik
 	@go generate
 	@go build -ldflags "-X github.com/netlify/binrc/cmd.Version=`git rev-parse HEAD`"
 
 deps: ## Install dependencies.
-	@go get -u github.com/rakyll/statik
-	@go get -u github.com/golang/lint/golint
-	@go get -u github.com/golang/dep/cmd/dep && dep ensure
+	@go mod download
 
 image: ## Build the Docker image.
+	@GO111MODULE=off go get -u github.com/myitcv/gobin
 	@docker build .
 
 lint: ## Run golint to ensure the code follows Go styleguide.
-	@golint -set_exit_status `go list ./... | grep -v /vendor/`
+	@gobin -m -run github.com/golang/lint/golint -set_exit_status ./...
 
 publish: release upload ## Build and upload a release to GitHub releases.
 
@@ -30,12 +28,8 @@ release: build ## Build the linux binary and prepares the release as a tarball.
 	@cp LICENSE releases/binrc_${TAG}_linux_amd64/
 	@tar -C releases -czvf releases/binrc_${TAG}_Linux-64bit.tar.gz binrc_${TAG}_linux_amd64
 
-statik: ## Generate statik code
-	@mkdir -p ./statik
-	@statik -src=./statik
-
 test: lint ## Run tests.
-	@go test -v `go list ./... | grep -v /vendor/`
+	@go test -v ./...
 
 upload: ## Upload release to GitHub releases.
 	@hub release create -a releases/binrc_${TAG}_Linux-64bit.tar.gz v${TAG}

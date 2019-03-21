@@ -1,4 +1,7 @@
-//go:generate statik -src=./templates
+//go:generate rm -rf ./statik
+//go:generate mkdir -p ./statik
+//go:generate gobin -m -run github.com/rakyll/statik -src=./statik
+//go:generate gobin -m -run github.com/rakyll/statik -src=./templates
 
 package main
 
