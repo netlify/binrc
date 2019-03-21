@@ -10,6 +10,6 @@ env:
     - GOPROXY=https://microsoftgoproxy.azurewebsites.net/
 
 install: make deps
-script: make statik all
+script: make all
 notifications:
     email: false
