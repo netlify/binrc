@@ -32,9 +32,9 @@ const (
 // aliases is a map of known project aliases
 // to make finding project more easy.
 var aliases = map[string]string{
-	"hugo": "spf13/hugo",
+	"hugo":      "spf13/hugo",
 	"gutenberg": "keats/gutenberg",
-	"zola": "getzola/zola",
+	"zola":      "getzola/zola",
 }
 
 type template struct {
@@ -266,7 +266,7 @@ func untar(reader io.Reader, destination string) error {
 
 		_, err = io.Copy(file, tr)
 		if err != nil {
-			return errors.Wrapf(err, "error creating file: %s", file)
+			return errors.Wrapf(err, "error creating file: %+v", file)
 		}
 	}
 
