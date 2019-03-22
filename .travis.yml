@@ -3,9 +3,13 @@ language: go
 sudo: false
 
 go:
-  - 1.9
+  - 1.12
+env:
+  global:
+    - GO111MODULE=on
+    - GOPROXY=https://microsoftgoproxy.azurewebsites.net/
 
 install: make deps
-script: make statik all
+script: make all
 notifications:
     email: false
