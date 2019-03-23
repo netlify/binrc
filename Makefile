@@ -23,15 +23,18 @@ lint: ## Run golint to ensure the code follows Go styleguide.
 
 publish: release upload ## Build and upload a release to GitHub releases.
 
-release: build ## Build the linux binary and prepares the release as a tarball.
+release: ## Build the linux binary and prepares the release as a tarball.
+	$(eval TAG := $(shell git describe --tags --abbrev=0 | cut -c 2-))
+	@GOOS=linux GOARCH=amd64 go build -ldflags "-X github.com/netlify/binrc/cmd.Version=`git rev-parse HEAD`"
 	@rm -rf releases/*
-	@mkdir -p releases/binrc_${TAG}_linux_amd64
-	@mv binrc releases/binrc_${TAG}_linux_amd64/binrc_${TAG}_linux_amd64
-	@cp LICENSE releases/binrc_${TAG}_linux_amd64/
-	@tar -C releases -czvf releases/binrc_${TAG}_Linux-64bit.tar.gz binrc_${TAG}_linux_amd64
+	@mkdir -p releases/binrc_$(TAG)_linux_amd64
+	@mv binrc releases/binrc_$(TAG)_linux_amd64/binrc_$(TAG)_linux_amd64
+	@cp LICENSE releases/binrc_$(TAG)_linux_amd64/
+	@tar -C releases -czvf releases/binrc_$(TAG)_Linux-64bit.tar.gz binrc_$(TAG)_linux_amd64
 
 test: lint ## Run tests.
 	@go test -v ./...
 
 upload: ## Upload release to GitHub releases.
-	@hub release create -a releases/binrc_${TAG}_Linux-64bit.tar.gz v${TAG}
+	$(eval TAG := $(shell git describe --tags --abbrev=0 | cut -c 2-))
+	@hub release create -a releases/binrc_$(TAG)_Linux-64bit.tar.gz v$(TAG)
