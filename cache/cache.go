@@ -32,9 +32,10 @@ const (
 // aliases is a map of known project aliases
 // to make finding project more easy.
 var aliases = map[string]string{
-	"hugo": "gohugoio/hugo",
+	"hugo":      "gohugoio/hugo",
 	"gutenberg": "keats/gutenberg",
 	"zola":      "getzola/zola",
+	"mdbook":    "rust-lang/mdbook",
 }
 
 type template struct {
@@ -115,7 +116,6 @@ func (c *Cache) newProject(name, versionString string) (*Project, error) {
 	if err != nil {
 		return nil, errors.Wrapf(err, "invalid version %s", versionString)
 	}
-
 	var t *template
 	projectTemplates, ok := c.templates[nwo[1]]
 	if ok {
