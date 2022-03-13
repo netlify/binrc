@@ -162,7 +162,7 @@ func New(storePath string) (*Cache, error) {
 
 // GetOrSet fetches a project from the cache.
 // If the project is not in the cache, it tries
-// to donwload it from GitHub releases.
+// to download it from GitHub releases.
 func (c *Cache) GetOrSet(name, version string) (*Project, error) {
 	project, err := c.newProject(name, version)
 	if err != nil {
