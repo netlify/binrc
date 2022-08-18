@@ -32,7 +32,7 @@ const (
 // aliases is a map of known project aliases
 // to make finding project more easy.
 var aliases = map[string]string{
-	"hugo": "gohugoio/hugo",
+	"hugo":      "gohugoio/hugo",
 	"gutenberg": "keats/gutenberg",
 	"zola":      "getzola/zola",
 }
