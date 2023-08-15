@@ -33,7 +33,7 @@ The `install` subcommand Installs a new binary. If that version is not already i
 cache, Binrc will try to fetch it from GitHub's releases and keep it in its cache.
 
 ```
-binrc install spf13/hugo 0.19
+binrc install gohugoio/hugo 0.94.2
 ```
 
 ### Versions as environment variables
@@ -42,15 +42,16 @@ Binrc supports settings binary version numbers as environment variables. It will
 in the environment to configure the right version.
 
 ```
-HUGO_VERSION=0.19 binrc install spf13/hugo
+HUGO_VERSION=0.94.2 binrc install gohugoio/hugo
 ```
 
 ### Aliases
 
-Binrc keeps a list of aliases to make installing binaries more easy. If a project name is not in `OWNER/NAME` for, Binrc will
+Binrc keeps [a list of aliases](cache/cache.go) to make installing binaries more easy. If a project name is not in `OWNER/NAME` format, Binrc will
 check the list of aliases to try to resolve the project.
 
 This is the current known list:
 
-- hugo: spf13/hugo
+- hugo: gohugoio/hugo
 - gutenberg: keats/gutenberg
+- zola: getzola/zola
